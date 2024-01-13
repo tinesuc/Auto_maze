@@ -55,9 +55,8 @@ draw_maze=()=>{
     door=document.querySelector('#door');
     door.style.height=xSize*1.5 + "px";
     //cw=nx*xSize+2*xStart;
-    ch=ny*ySize+2*yStart;
     canva.width=cw=nx*xSize+2*xStart;
-    canva.height=ch;
+    canva.height=ch=ny*ySize+2*yStart;
     lineW=1;
     
     dragBounds["edge"]=(x,y)=>{
