@@ -1,0 +1,124 @@
+:root{
+	--scale:1.1;
+    --zoom:1;
+    --aspect:16/9;
+}
+*{
+	margin:0;
+	padding:0;
+	box-sizing: border-box;
+	font-family: Roboto;
+    user-select:none;
+}
+html{
+    overflow: hidden;
+}
+span.req{
+    color:#f27474
+}
+h1{
+    line-height:5rem;
+    font-size:3rem;
+    text-align: center;
+}
+/*.folded_input .info_item > .input{
+    min-width:10ch !important;
+}*/
+span, label{
+    user-select:text;
+}
+ul{
+	list-style-type:none;
+    scrollbar-color:rgb(0 0 0 / 0);
+    padding-top:3px;
+}
+
+span.animate{
+	animation: leftright 2s infinite alternate ease-in-out;
+    
+}
+@keyframes leftright {
+  0%,
+  10% {
+    transform: translateX(0%);
+    left: 0%;
+  }
+  80%,
+  100% {
+    transform: translateX(-100%);
+    left: 100%;
+  }
+}
+#main{
+    display:flex;
+    justify-content: center;
+}
+#left{
+}
+#right{
+    min-width:30%;
+    display:flex;
+    flex-direction: column;
+    padding:20px;
+}
+#regen,#play,#solve{
+    width:fit-content;
+    min-width:5rem;
+    padding:3px 6px;
+    font-size:1.15rem;
+    margin:0.7rem 0.7rem 0 0;
+}
+li{
+    padding:3px 6px 3px 0;
+    font-size:1.1rem;
+    display:flex;
+}
+li span:first-child{
+    margin: auto 6px auto 0px;
+}
+li span:last-child{
+    margin: auto 0px auto 6px;
+}
+li input{
+    margin:auto 0;
+}
+li input[type="number"]{
+    margin:auto 0;
+    width:10.7rem;
+}
+
+#maze-play{
+    display:flex;
+}
+#entrance{
+    width:0;
+    height:0;
+    position:relative;
+}
+#door{
+    aspect-ratio:1;
+    background:#00000080;
+    position:absolute;
+    border-radius: 50%;
+}
+#maze{
+    
+    /*aspect-ratio:1;*/
+    /*height: 600px;*/
+    /*image-rendering: pixelated;*/
+    
+}
+
+
+
+
+
+/*
+https://css-tricks.com/webkit-image-wipes/
+https://www.quirksmode.org/css/images/colorstops.html
+https://www.quirksmode.org/css/images/position.html
+https://css-tricks.com/css3-gradients/
+
+
+https://snorpey.github.io/distort-grid/
+*/

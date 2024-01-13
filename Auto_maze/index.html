@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+	<meta charset="UTF-8">
+	<title>Auto Maze</title>
+	<link rel="stylesheet" href="css/main.css" type="text/css" media="all" >
+	<link rel="stylesheet" href="css/scroll-dark.css" type="text/css" media="all" >
+	<link rel="stylesheet" href="css/range.css" type="text/css" media="all" >
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Caveat">
+	<link rel="icon" type="image/x-icon" href="images/bottle_icon_temp.png">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="js/drag.js"></script>
+    <script src="js/gen_maze.js"></script>
+</head>
+<body>
+    <div id="title"><h1>Auto Maze</h1></div>
+    <div id="main">
+        <div id="left">
+            <div id="entrance">
+                <div id="door"></div>
+            </div>
+            <canvas id="maze" width="600" height="600"></canvas>
+        </div>
+        <div id="right">
+            <button id="regen">Regenerate</button>
+            <ul>
+                <li>Seed</li>
+                <li><input type="number" id="seed" value=""></li>
+                <li>Complexity</li>
+                <li><span>1</span><input type="range" id="complx" min="1" max="3" value="3"><span>3</span></li>
+                <li>Width</li>
+                <li><span>5</span><input type="range" id="width" min="5" max="40" value="30"><span>40</span></li>
+                <li>Height</li>
+                <li><span>5</span><input type="range" id="height" min="5" max="40" value="30"><span>40</span></li>
+                <li>Cell size</li>
+                <li><span>5</span><input type="range" id="size" min="5" max="25" value="15"><span>25</span></li>
+            </ul>
+            <div id="maze-play">
+                <button id="play">Play</button>
+                <button id="solve">Solve</button>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="js/script.js"></script>
+</html>
