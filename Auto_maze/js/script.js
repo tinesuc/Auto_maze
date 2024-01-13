@@ -7,6 +7,16 @@ prev_w = 0;
 prev_h = 0;
 
 
+clamp = (num, min, max) => {
+    if (num == "NaN") {
+        num = min;
+        return;
+    }
+    num = Math.max(min, num);
+    num = Math.min(max, num);
+    return num;
+};
+
 
 
 
@@ -44,9 +54,26 @@ draw_maze=()=>{
     ySize=xSize;
     door=document.querySelector('#door');
     door.style.height=xSize*1.5 + "px";
-    canva.width=nx*xSize+2*xStart;
-    canva.height=ny*ySize+2*yStart;
+    //cw=nx*xSize+2*xStart;
+    ch=ny*ySize+2*yStart;
+    canva.width=cw=nx*xSize+2*xStart;
+    canva.height=ch;
     lineW=1;
+    
+    dragBounds["edge"]=(x,y)=>{
+        x=clamp(x,xStart-xSize*0.75,cw-xStart-xSize*0.75);
+        y=clamp(y,yStart-xSize*0.75,ch-yStart-xSize*0.75);
+        return {
+            x:x,
+            y:y
+        };
+    };
+    var pos=dragBounds["edge"](0,0);
+    var door=document.querySelector('#door');
+    dragElement(door,"edge");
+    door.style.left = pos.x + "px";
+    door.style.top = pos.y + "px";
+    
     ctx.globalCompositeOperation="source-over";
     ctx.beginPath();
     ctx.lineWidth = lineW+1;
@@ -132,7 +159,6 @@ document.addEventListener("DOMContentLoaded", (event) => {
     
     seedI=document.querySelector('#seed').value=seed;
     
-    dragElement(document.querySelector('#door'));
     draw_maze();
 });
 
@@ -150,16 +176,6 @@ get_img_px = (img)=>{
     var pixelData = canvas.getContext('2d').getImageData(img.width/2,img.height/1.8, 1, 1).data;
     return "rgba("+pixelData[0]+","+pixelData[1]+","+pixelData[2]+","+pixelData[3]+")";
 }
-clamp = (num, min, max) => {
-    if (num == "NaN") {
-        num = "0";
-        return;
-    }
-    num = Math.max(0, num);
-    num = Math.min(max, num);
-    return num;
-}
-
 manage_anim = (event) => {
     let containers = document.querySelectorAll(".text");
     for (i = 0; i < containers.length; i++) {
