@@ -4,8 +4,9 @@ dragBounds["default"]=(x,y)=>{
         x:x,
         y:y
     };
-}
-function dragElement(elmnt,bounds) {
+};
+
+function dragElement(elmnt,bounds, run) {
   var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
   if (elmnt.querySelector("#header")) {
     // if present, the header is where you move the DIV from:
@@ -31,20 +32,21 @@ function dragElement(elmnt,bounds) {
   function elementDrag(e) {
     e = e || window.event;
     e.preventDefault();
-    // calculate the new cursor position:
+    // calculate the new cursor position: viewportOffset.top;
     var boundsName = e.view.door.getAttribute("dragBounds");
     var bounds=dragBounds[boundsName];
     if(bounds==null)bounds=dragBounds["default"];
     pos1 = pos3 - e.clientX;
     pos2 = pos4 - e.clientY;
-    pos3 = e.clientX;
-    pos4 = e.clientY;
-    // set the element's new position:
     var pos = bounds(
             (elmnt.offsetLeft - pos1),
             (elmnt.offsetTop - pos2));
+    pos3 = pos.x - elmnt.offsetLeft + pos3/*e.clientX*/;
+    pos4 = pos.y - elmnt.offsetTop + pos4/*e.clientY*/;
+    // set the element's new position: /.getBoundingClientRect();
     elmnt.style.left = pos.x + "px";
     elmnt.style.top = pos.y + "px";
+    run();
   }
 
   function closeDragElement() {

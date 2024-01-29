@@ -2,42 +2,53 @@
 <html lang="sl">
 <head>
 	<meta charset="UTF-8">
-	<title>Auto Maze</title>
+	<title class="trs">Auto Maze</title>
 	<link rel="stylesheet" href="css/main.css" type="text/css" media="all" >
 	<link rel="stylesheet" href="css/scroll-dark.css" type="text/css" media="all" >
 	<link rel="stylesheet" href="css/range.css" type="text/css" media="all" >
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Caveat">
-	<link rel="icon" type="image/x-icon" href="images/bottle_icon_temp.png">
+	<link rel="icon" type="image/x-icon" href="img/icon.png">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>  
+        reseting=false;
+        timeouts = [];
+        solved=false;
+    </script>  
     <script src="js/drag.js"></script>
     <script src="js/gen_maze.js"></script>
+    <script src="js/translate.js"></script>
+    <link rel="import" href="js/lang_sl.json">
+    <link rel="import" href="js/lang_en.json">
 </head>
 <body>
-    <div id="title"><h1>Auto Maze</h1></div>
+    <div id="title" class="trs"><h1>$title</h1></div>
     <div id="main">
         <div id="left">
+            <canvas id="maze" width="600" height="600"></canvas>
+            <canvas id="anim" width="491" height="491"></canvas>
             <div id="entrance">
                 <div id="door"></div>
             </div>
-            <canvas id="maze" width="600" height="600"></canvas>
         </div>
         <div id="right">
-            <button id="regen">Regenerate</button>
+            <button id="regen" class="trs">Regenerate</button>
             <ul>
-                <li>Seed</li>
+                <li class="trs">Seed</li>
                 <li><input type="number" id="seed" value=""></li>
-                <li>Complexity</li>
+                <li class="trs">Complexity</li>
                 <li><span>1</span><input type="range" id="complx" min="1" max="3" value="3"><span>3</span></li>
-                <li>Width</li>
-                <li><span>5</span><input type="range" id="width" min="5" max="40" value="30"><span>40</span></li>
-                <li>Height</li>
+                <li class="trs">Width</li>
+                <li class="trs"><span>5</span><input type="range" id="width" min="5" max="40" value="30"><span>40</span></li>
+                <li class="trs">Height</li>
                 <li><span>5</span><input type="range" id="height" min="5" max="40" value="30"><span>40</span></li>
-                <li>Cell size</li>
+                <li class="trs">Cell size</li>
                 <li><span>5</span><input type="range" id="size" min="5" max="25" value="15"><span>25</span></li>
+                <li class="trs">Speed</li>
+                <li><span>0</span><input type="range" id="speed" min="0" max="40" value="5"><span>40</span></li>
             </ul>
             <div id="maze-play">
-                <button id="play">Play</button>
-                <button id="solve">Solve</button>
+                <button id="play" class="trs">Play</button>
+                <button id="solve" class="trs">Solve</button>
             </div>
         </div>
     </div>

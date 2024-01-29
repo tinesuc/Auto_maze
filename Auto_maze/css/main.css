@@ -54,6 +54,7 @@ span.animate{
     justify-content: center;
 }
 #left{
+    POSITION:RELATIVE;
 }
 #right{
     min-width:30%;
@@ -93,7 +94,8 @@ li input[type="number"]{
 #entrance{
     width:0;
     height:0;
-    position:relative;
+    position:absolute;
+    top:0;
 }
 #door{
     aspect-ratio:1;
@@ -107,6 +109,10 @@ li input[type="number"]{
     /*height: 600px;*/
     /*image-rendering: pixelated;*/
     
+}
+#anim{
+    position: absolute;
+    left: 0;
 }
 
 
