@@ -3,7 +3,7 @@
 function translate(ell, file){
     var all = ell.querySelectorAll(".trs");
     for(var i=0;i<all.length;i++){
-        var txt = all[i].innerText;
+        var txt = all[i].getAttribute("trtxt");
         var ind = txt.indexOf("$");
         if(ind>=0){
             var sInd = txt.indexOf(" ", ind);
@@ -14,21 +14,10 @@ function translate(ell, file){
                 adr=txt.substring(ind+1);
             }
             if(adr!==""){
-                
+                all[i].innerText=file[adr];
             }
-            console.log(adr);
-            console.log(ind);
-            console.log(txt);
         }
-       
-        /*
-        var jsonData = JSON.parse(file);
-        for (var i = 0; i < jsonData.counters.length; i++) {
-            var counter = jsonData.counters[i];
-            console.log(counter.counter_name);
-        }*/
     }
-    
 }
 /*
 const box = document.getElementById('box');

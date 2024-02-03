@@ -2,18 +2,25 @@
 <html lang="sl">
 <head>
 	<meta charset="UTF-8">
-	<title class="trs">Auto Maze</title>
+	<title class="trs" trtxt="$title">Auto Maze</title>
 	<link rel="stylesheet" href="css/main.css" type="text/css" media="all" >
 	<link rel="stylesheet" href="css/scroll-dark.css" type="text/css" media="all" >
 	<link rel="stylesheet" href="css/range.css" type="text/css" media="all" >
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Caveat">
 	<link rel="icon" type="image/x-icon" href="img/icon.png">
+    <script type="module" defer>
+  import { polyfillCountryFlagEmojis } from "https://cdn.skypack.dev/country-flag-emoji-polyfill";
+  polyfillCountryFlagEmojis();
+</script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>  
         reseting=false;
-        timeouts = [];
-        solved=false;
+        spos={x:1,y:1};
+        timeouts=[];
+        langlist=["en","sl"];
+        lang=[];
     </script>  
+    <script src="js/script.js"></script>
     <script src="js/drag.js"></script>
     <script src="js/gen_maze.js"></script>
     <script src="js/translate.js"></script>
@@ -21,37 +28,111 @@
     <link rel="import" href="js/lang_en.json">
 </head>
 <body>
-    <div id="title" class="trs"><h1>$title</h1></div>
+    <div id="title" ><h1 class="trs" trtxt="$title">Auto Maze</h1></div>
     <div id="main">
         <div id="left">
-            <canvas id="maze" width="600" height="600"></canvas>
-            <canvas id="anim" width="491" height="491"></canvas>
-            <div id="entrance">
-                <div id="door"></div>
+            <div id="maze-box">
+                <canvas id="maze" width="600" height="600"></canvas>
+                <canvas id="anim" width="491" height="491"></canvas>
+                <div id="entrance">
+                    <div id="door"></div>
+                </div>
+                <div class="switch-toggle switch-3 switch-candy">
+                <input id="en" name="state-d" type="radio" checked="" />
+                <label for="en" onclick="mswitch(this.parentElement);">🇺🇸</label>
+<!--                <input id="na" name="state-d" type="radio" checked="checked" />
+                <label for="na" onclick="mswitch(this.parentElement);">N/A</label>-->
+                <input id="sl" name="state-d" type="radio" />
+                <label for="sl" onclick="mswitch(this.parentElement);">🇸🇮</label>
+            </div>
             </div>
         </div>
         <div id="right">
-            <button id="regen" class="trs">Regenerate</button>
             <ul>
-                <li class="trs">Seed</li>
-                <li><input type="number" id="seed" value=""></li>
-                <li class="trs">Complexity</li>
-                <li><span>1</span><input type="range" id="complx" min="1" max="3" value="3"><span>3</span></li>
-                <li class="trs">Width</li>
-                <li class="trs"><span>5</span><input type="range" id="width" min="5" max="40" value="30"><span>40</span></li>
-                <li class="trs">Height</li>
-                <li><span>5</span><input type="range" id="height" min="5" max="40" value="30"><span>40</span></li>
-                <li class="trs">Cell size</li>
-                <li><span>5</span><input type="range" id="size" min="5" max="25" value="15"><span>25</span></li>
-                <li class="trs">Speed</li>
-                <li><span>0</span><input type="range" id="speed" min="0" max="40" value="5"><span>40</span></li>
+                <li><button id="regen" class="trs" trtxt="$regenerate">Regenerate</button></li>
+                <li>
+                    <div class="trs" trtxt="$seed">Seed</div>
+                    <div>
+                        <input type="number" id="seed" value="">
+                    </div>
+                </li>
+                <li>
+                    <div class="trs" trtxt="$complexity">Complexity</div>
+                    <div>
+                        <span>1</span>
+                        <div class="tooltip">
+                            <div class="toolpitbox">
+                                <span class="tooltiptext">3</span>
+                            </div>
+                        </div>
+                        <input type="range" id="complx" min="10" max="30" value="30" onchange="incx(this)">
+                        <span>3</span>
+                    </div>
+                </li>
+                <li>
+                    <div class="trs" trtxt="$width">Width</div>
+                    <div>
+                        <span>5</span>
+                        <div class="tooltip">
+                            <div class="toolpitbox">
+                                <span class="tooltiptext">30</span>
+                            </div>
+                        </div>
+                        <input type="range" id="width" min="5" max="40" value="30" onchange="innm(this)">
+                        <span>40</span>
+                    </div>
+                </li>
+                <li>
+                    <div class="trs" trtxt="$height">Height</div>
+                    <div>
+                        <span>5</span>
+                        <div class="tooltip">
+                            <div class="toolpitbox">
+                                <span class="tooltiptext">30</span>
+                            </div>
+                        </div>
+                        <input type="range" id="height" min="5" max="40" value="30" onchange="innm(this)">
+                        <span>40</span>
+                    </div>
+                </li>
+                <li>
+                    <div class="trs" trtxt="$cell_size">Cell Size</div>
+                    <div>
+                        <span class="trs" trtxt="$auto">Auto</span>
+                        <div class="tooltip">
+                            <div class="toolpitbox">
+                                <span class="tooltiptext">15</span>
+                            </div>
+                        </div>
+                        <input type="range" id="size" min="4" max="25" value="4" onchange="incs(this)">
+                        <span>25</span>
+                    </div>
+                </li>
+                <li>
+                    <div class="trs" trtxt="$speed">Speed</div>
+                    <div>
+                        <span>0</span>
+                        <div class="tooltip">
+                            <div class="toolpitbox">
+                                <span class="tooltiptext">5</span>
+                            </div>
+                        </div>
+                        <input type="range" id="speed" min="0" max="40" value="5" onchange="innm(this)">
+                        <span>40</span>
+                    </div>
+                </li>
+                <li>
+                    <div id="maze-play">
+                        <button id="play" class="trs" trtxt="$play">Play</button>
+                        <button id="solve" class="trs" trtxt="$solve">Solve</button>
+                    </div>
+                </li>
             </ul>
-            <div id="maze-play">
-                <button id="play" class="trs">Play</button>
-                <button id="solve" class="trs">Solve</button>
-            </div>
         </div>
     </div>
 </body>
-<script src="js/script.js"></script>
+
+
+<div id="p1" style="font-size: 0"></div>
+
 </html>

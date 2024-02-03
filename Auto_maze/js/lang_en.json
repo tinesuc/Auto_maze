@@ -1,3 +1,13 @@
-[
-    {"title":"Auto Maze"}
-]
+{
+    "title":"Auto Maze",
+    "regenerate":"Regenerate",
+    "seed":"Seed",
+    "complexity":"Complexity",
+    "width":"Width",
+    "height":"Height",
+    "cell_size":"Cell size",
+    "speed":"Speed",
+    "play":"Play",
+    "solve":"Solve",
+    "auto":"Auto"
+}

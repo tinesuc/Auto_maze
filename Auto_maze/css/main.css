@@ -20,6 +20,7 @@ h1{
     line-height:5rem;
     font-size:3rem;
     text-align: center;
+    height: 5rem;
 }
 /*.folded_input .info_item > .input{
     min-width:10ch !important;
@@ -31,6 +32,9 @@ ul{
 	list-style-type:none;
     scrollbar-color:rgb(0 0 0 / 0);
     padding-top:3px;
+    width: fit-content;
+    margin-left: 30%;
+    position: relative;
 }
 
 span.animate{
@@ -52,39 +56,76 @@ span.animate{
 #main{
     display:flex;
     justify-content: center;
+    min-height: min-content;
+    right: 20%;
 }
 #left{
     POSITION:RELATIVE;
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+}
+#maze-box{
+    position: relative;
 }
 #right{
-    min-width:30%;
+    min-width:20rem;
     display:flex;
     flex-direction: column;
-    padding:20px;
+    padding:20px 0;
+    margin-right: calc(40vw - 320px);
 }
 #regen,#play,#solve{
     width:fit-content;
     min-width:5rem;
     padding:3px 6px;
     font-size:1.15rem;
+    height:2rem;
     margin:0.7rem 0.7rem 0 0;
+}
+#regen,#play{
+    margin-left: 0%;
 }
 li{
     padding:3px 6px 3px 0;
     font-size:1.1rem;
     display:flex;
+    width: 100%;
+    flex-direction: column;
 }
-li span:first-child{
+li > div{
+    display: flex;
+    height: 22px;
+}
+li > div > span:first-child{
+    position: absolute;
+    right: 102%;
+    margin-top: 5px
+}
+li > div > span:last-child{
+    position: absolute;
+    left: 132px;
+    margin-top: 5px
+}
+li:not(:has(*)){
+    margin: 0 0 0 40%;
+}
+li > span:first-child{
     margin: auto 6px auto 0px;
+    flex: 1;
+    text-align: right;
 }
-li span:last-child{
+li > span:last-child{
     margin: auto 0px auto 6px;
+    flex: 1;
 }
 li input{
     margin:auto 0;
+    left: 1px;
+    position: absolute;
 }
 li input[type="number"]{
-    margin:auto 0;
+    left: 0px;
     width:10.7rem;
 }
 
@@ -104,7 +145,8 @@ li input[type="number"]{
     border-radius: 50%;
 }
 #maze{
-    
+   
+
     /*aspect-ratio:1;*/
     /*height: 600px;*/
     /*image-rendering: pixelated;*/
@@ -114,6 +156,78 @@ li input[type="number"]{
     position: absolute;
     left: 0;
 }
+
+
+
+/* Tooltip container */
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
+.toolpitbox{
+    visibility: hidden;
+    width: 129px;
+    text-align: center;
+    position: absolute;
+    z-index: 1;
+    bottom: 100%;
+    left: 100%;
+    margin-left: 0px;
+}
+.tooltiptext {
+    visibility: hidden;
+    background-color: rgba(0 0 0 / 50%);
+    color: #fff;
+    text-align: center;
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-left: calc(32.7rem/4 - 25%);
+}
+li:has(input[type=range]:hover) .tooltip .tooltiptext {
+  visibility: visible;
+}
+#p1{
+    position:absolute;
+    top:1000%;
+}
+
+
+.switch-toggle {
+    background: #242729;
+    border-radius: 16px;
+    width: fit-content;
+    display: flex;
+    --hgt:16px;
+    right: 0;
+    position: absolute;
+}
+.switch-toggle input {
+    display: none;
+    opacity: 0;
+}
+.switch-toggle input + label {
+    padding: var(--hgt) calc(var(--hgt)/2 + 8px);
+    color: #fff;
+    cursor: pointer;
+    line-height: 0;
+    font-family: "Twemoji Country Flags", "Helvetica", "Comic Sans", serif;
+}
+.switch-toggle input:checked + label {
+    background: green;
+}
+.switch-toggle label:last-of-type {
+    border-end-end-radius: var(--hgt);
+    border-start-end-radius: var(--hgt);
+}
+.switch-toggle label:first-of-type {
+    border-start-start-radius: var(--hgt);
+    border-end-start-radius: var(--hgt);
+}
+
+
+
+
+
 
 
 

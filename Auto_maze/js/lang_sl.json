@@ -1,3 +1,13 @@
-[
-    {"title":"Sami Lab"}
-]
+{
+    "title":"Sami Lab",
+    "regenerate":"Regeneriraj",
+    "seed":"Seme",
+    "complexity":"Težavnost",
+    "width":"Širina",
+    "height":"Višina",
+    "cell_size":"Velikost celice",
+    "speed":"Hitrost",
+    "play":"Igraj",
+    "solve":"Reši",
+    "auto":"Avtomatsko"
+}

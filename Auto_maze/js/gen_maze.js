@@ -61,27 +61,20 @@ rerand=(arr)=>{
     return lc;
 };
 chosenext=(mz, x, y )=>{
-    //use array 0-3, reorder, iterate
     var lc=rerand(intr);
-    //console.log(mz);
-    //console.log(lc+"   h");
     mz[x][y]=1;
     var i=0;
     for(;i<lc.length;i++){
         var xc=x+dir[lc[i]][0];
         var yc=y+dir[lc[i]][1];
-        //console.log(xc+"  "+yc+" | "+lc+" . "+i);
         if(0<xc&&xc<mz.length&&0<yc&&yc<mz[0].length){
-            //console.log(xc+"  "+yc+"  "+i+"  "+mz[xc][yc]);
             if(mz[xc][yc]===0){
                 var xh=x+dirh[lc[i]][0];
                 var yh=y+dirh[lc[i]][1];
                 mz[xh][yh]=1;
                 chosenext(mz,xc,yc);
-                //console.log(xc+"  "+yc+" || "+lc);
             }
         }
-        //console.log(i);
     }
     return mz;
 };
@@ -112,6 +105,16 @@ function drawGreen (spos,v){
         v.ySize*(spos.y-1)/2+v.yStart+1,
         v.xSize-2, v.ySize-2);
 };
+function drawDot (spos,v){
+    v.ctx.fillStyle = "#ff00ff";
+    v.ctx.beginPath();
+    v.ctx.arc(v.xSize*(spos.x-1)/2+v.xStart+1+(v.xSize-2)/2,
+        v.ySize*(spos.y-1)/2+v.yStart+1+(v.ySize-2)/2,
+        (v.xSize-2)/4,
+        0, 2 * Math.PI);
+    v.ctx.fill();
+    v.ctx.stroke();
+};
 
 search_maze=(mz, spos, epos, v)=>{
     if(v.b){
@@ -120,11 +123,13 @@ search_maze=(mz, spos, epos, v)=>{
     }
     mz[spos.x][spos.y]=2;
     timeouts.push(setTimeout(()=>drawYellow(spos,v),timeo));
+    sr_depth2++;
     timeo+=v.t;
     if(spos.x==epos.x&&spos.y==epos.y){
         mz[epos.x][epos.y]=3;
         timeouts.push(setTimeout(()=>drawGreen(spos,v),timeo));
         timeo+=v.t;
+        draw_dt_delay=draw_dt_delay+sr_depth2*v.t + sr_depth*v.t;
         return 1;
     }
     for(var i=0;i<4;i++){
@@ -134,12 +139,17 @@ search_maze=(mz, spos, epos, v)=>{
             var wl = mz[spos.x+dirh[i][0]][spos.y+dirh[i][1]];
             var fw = mz[xc][yc];
             if(wl==1&&fw==1){
+                sr_depth++;
                 if(search_maze(mz,{x:xc,y:yc},epos,v)==1){
                     mz[spos.x][spos.y]=3;
                     timeouts.push(setTimeout(()=>drawGreen(spos,v),timeo));
+                    //(timeo - sr_depth2*v.t) 
+                    timeouts.push(setTimeout(()=>drawDot(spos,v),sr_depth*v.t+draw_dt_delay));
+                    sr_depth--;
                     timeo+=v.t;
                     return 1;
                 }
+                sr_depth--;
             }
         }
     }
