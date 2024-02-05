@@ -5,6 +5,19 @@ wh = 0;
 ww = 0;
 prev_w = 0;
 prev_h = 0;
+mover = new AbortController();
+a_chomp = new Audio('aud/chomp.wav');
+a_chomp.volume=0.15;
+a_eat = new Audio('aud/eatfruit.wav');
+a_eat.volume=0.15;
+pac = document.createElement('img');
+pac.setAttribute("src","img/pcm1.png");
+
+
+
+get_px = (ctx, x, y)=>{
+    return ctx.getImageData(x,y, 1, 1).data;
+};
 
 clamp = (num, min, max) => {
     if (num == "NaN") {
@@ -15,8 +28,6 @@ clamp = (num, min, max) => {
     num = Math.min(max, num);
     return num;
 };
-
-
 
 doorHandle=()=>{
     var spp=spos;
@@ -47,7 +58,6 @@ function concloader(i, para, pd){
     };
 }
 
-
 draw_maze=()=>{
     
     bl=true;
@@ -57,12 +67,13 @@ draw_maze=()=>{
     
     concloader(0,para,"en");
     
-    
+    document.querySelector("#p1").appendChild(pac);
     
     
     canva = document.querySelector('#maze');
     anim = document.querySelector('#anim');
     ctx = canva.getContext("2d");
+    ctx2 = anim.getContext("2d");
     xStart=20.5;
     yStart=20.5;
     complx = document.querySelector('#complx');
@@ -80,7 +91,7 @@ draw_maze=()=>{
     }
     ySize=xSize;
     door=document.querySelector('#door');
-    dSize=xSize*1.5;
+    dSize=window.innerHeight/40;
     door.style.height=dSize + "px";
     
     
@@ -92,7 +103,32 @@ draw_maze=()=>{
     dragElement(door,"edge", doorHandle);
     door.style.left = pos.x + "px";
     door.style.top = pos.y + "px";
+    
+//    var w=widthEl.value*1;
+//    var h=heightEl.value*1;
+//    var arr = new Array(w*2+1);
+//    for (var i = 0; i < arr.length; i++) {
+//        arr[i] = new Array(h*2+1);
+//        arr[i].fill(0);
+//    }
+////    for(var i=xStart;i<xSize*w+xStart;i+=xSize/2){
+////        for(var j=yStart;j<xSize*h+yStart;j+=xSize){
+//    for(var i=0;i<w*2+1;i++){
+//        for(var j=0;j<h*2+1;j++){
+//            var wi=xStart+xSize/2*i;
+//            var hj=yStart+xSize/2*j;
+//            var cl=get_px(ctx,wi,hj);
+//            if(cl[3]!=0){
+//                arr[i][j]=1;
+//                //console.log(i+"  "+j);
+//                console.log(cl);
+//            }
+//        }
+//    }
+    //console.log(arr);
+    
 };
+
 regen=()=>{
     solved=false;
     for (var i=0; i<timeouts.length; i++) {
@@ -102,6 +138,8 @@ regen=()=>{
     draw_dt_delay=200;
     sr_depth=0;
     sr_depth2=0;
+    
+    mover.abort();
     
     switch(complx.value*0.1){
         case 1:
@@ -124,6 +162,7 @@ regen=()=>{
     //ctx.fillRect(0, 0, 150, 75);
     nx=widthEl.value*1;
     ny=heightEl.value*1;
+    
     maze = gen_maze(nx,ny,nx/2,ny/2);
     epos={x:maze.length-2,y:maze[0].length-2};
     maze[epos.x][epos.y+1]=1;
@@ -163,7 +202,7 @@ regen=()=>{
     ctx.globalCompositeOperation="source-over";
     ctx.beginPath();
     ctx.lineWidth = lineW+1;
-    ctx.strokeStyle = "rgba(0,0,0,1.0)";
+    ctx.strokeStyle = "#0033ff";
     ctx.globalAlpha = 1;
     for(i=1;i<nx*2+1;i+=2){
         for(j=0;j<ny*2+1;j+=2){
@@ -185,15 +224,112 @@ regen=()=>{
 };
 
 
+
+
+    pos={};
 play=()=>{
+    mover.abort();
+    mover = new AbortController();
+    Object.assign(pos,spos);//<-------
+    document.addEventListener("keydown", (e) => {
+        a_chomp.play();
+        console.log(a_chomp.duration);
+        const key=e.key;
+        console.log(key);
+        console.log(maze.length);
+        console.log(maze[0].length);
+        ctx2.imageSmoothingEnabled = false;
+        ctx2.clearRect(0, 0, ctx2.canvas.width, ctx2.canvas.height);
+        rad=0;
+        x=0;
+        y=0;
+        switch(key){
+            case "w":case "W":case "ArrowUp":
+                if(pos.y>1&&maze[pos.x][pos.y-1]!=0){
+                    pos.x+=+0;
+                    pos.y+=-2;
+                    
+                    x = ((pos.x-1)/2*xSize+xStart+xSize*0.1) / 2;
+                    y = ((pos.y-1)/2*xSize+yStart+xSize*0.1) / 2;
+                    rad = -90*Math.PI/180;
+                    ctx2.translate(x, y);
+                    ctx2.rotate(rad);
+                    
+                    
+                    console.log("qq");
+                }
+                
+                break;
+            case "s":case "S":case "ArrowDown":
+                if(pos.y<maze[0].length-2&&maze[pos.x][pos.y+1]!=0){
+                    pos.x+=+0;
+                    pos.y+=+2;
+                    
+                    x = ((pos.x-1)/2*xSize+xStart+xSize*0.1) / 2;
+                    y = ((pos.y-1)/2*xSize+yStart+xSize*0.1) / 2;
+                    rad = 90*Math.PI/180;
+                    ctx2.translate(x, y);
+                    ctx2.rotate(rad);
+                    
+                    console.log("ee");
+                }
+                
+                
+                break;
+            case "a":case "A":case "ArrowLeft":
+                if(pos.x>1&&maze[pos.x-1][pos.y]!=0){
+                    pos.x+=-2;
+                    pos.y+=+0;
+                    
+                    x = ((pos.x-1)/2*xSize+xStart+xSize*0.1) / 2;
+                    y = ((pos.y-1)/2*xSize+yStart+xSize*0.1) / 2;
+                    rad = 180*Math.PI/180;
+                    ctx2.translate(x, y);
+                    ctx2.rotate(rad);
+                    
+                    console.log("kk");
+                }
+
+
+                break;
+            case "d":case "D":case "ArrowRight":
+                if(pos.x<maze.length-2&&maze[pos.x+1][pos.y]!=0){
+                    pos.x+=+2;
+                    pos.y+=+0;
+                    
+                    x = ((pos.x-1)/2*xSize+xStart+xSize*0.1) / 2;
+                    y = ((pos.y-1)/2*xSize+yStart+xSize*0.1) / 2;
+                    rad = 0*Math.PI/180;
+                    ctx2.translate(x, y);
+                    ctx2.rotate(rad);
+                    
+                    console.log("gg");
+                }
+
+                break;
+        }
+        
+        ctx2.drawImage(pac, -xSize*0.8 / 2, -xSize*0.8 / 2, xSize*0.8,xSize*0.8);
+        ctx2.rotate(-rad);
+        ctx2.translate(-x, -y);
+        
+    }, {signal: mover.signal});
+
     
 };
 
+
+
+
+
+
+
+
+
 solve=()=>{
     if(solved)return;
-    canva2 = document.querySelector('#anim');
-    ctx2 = canva2.getContext("2d");
     speed=document.querySelector('#speed').value*1;
+    mover.abort();
     
     search_maze(maze, spos,epos ,{ctx:ctx2,xSize:xSize,xStart:xStart,yStart:yStart,ySize:ySize,t:speed,b:true});
     solved=true;
@@ -302,14 +438,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
 
 
-get_img_px = (img)=>{
-    var canvas = document.createElement('canvas');
-    canvas.width = img.width;
-    canvas.height = img.height;
-    canvas.getContext('2d').drawImage(img, 0, 0, img.width, img.height);
-    var pixelData = canvas.getContext('2d').getImageData(img.width/2,img.height/1.8, 1, 1).data;
-    return "rgba("+pixelData[0]+","+pixelData[1]+","+pixelData[2]+","+pixelData[3]+")";
-}
+
 manage_anim = (event) => {
     let containers = document.querySelectorAll(".text");
     for (i = 0; i < containers.length; i++) {
@@ -421,3 +550,7 @@ filter_num_clamp = (ell, min, max, step) => {
     num = Number(ell.value);
     ell.value = clamp(num, min, max, step);
 }
+
+
+
+
