@@ -140,6 +140,7 @@ li > div.ttl{
     height: unset;
     left: 3%;
     pointer-events: none;
+    width: 100%;
 }
 li:has(input[type="number"]) > div.ttl{
     bottom: 7px;
