@@ -74,6 +74,6 @@ function translate(ell, file, atr=null){
                 acl+=chr;
             }
         }
-        all[i].innerText=acl;
+        all[i].innerHTML=acl;
     }
 }
