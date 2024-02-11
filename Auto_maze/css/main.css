@@ -37,6 +37,7 @@ ul{
     padding-top:3px;
     margin-left: 30%;
     position: relative;
+    width: var(--inpw);
 }
 
 span.animate{
