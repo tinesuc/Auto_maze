@@ -10,9 +10,15 @@ a_chomp = new Audio('aud/chomp.wav');
 a_chomp.volume=0.15;
 a_eat = new Audio('aud/eatfruit.wav');
 a_eat.volume=0.15;
-pac = document.createElement('img');
-pac.setAttribute("src","img/pcm1.png");
+paci = document.createElement('img');
+paci.setAttribute("src","img/pcm1.png");
+pac = document.createElement("canvas").getContext("2d");
 
+/*paci.onload = function (){
+   
+    pac.drawImage(paci,0,0,paci.width,paci.height);
+    console.log( pac.constructor.name);
+};*/
 
 
 get_px = (ctx, x, y)=>{
@@ -67,7 +73,7 @@ draw_maze=()=>{
     
     concloader(0,para,"en");
     
-    document.querySelector("#p1").appendChild(pac);
+    document.querySelector("#p1").appendChild(paci);
     
     
     canva = document.querySelector('#maze');
@@ -226,35 +232,43 @@ regen=()=>{
 
 
 
-    pos={};
+pos={};
 play=()=>{
     mover.abort();
     mover = new AbortController();
     Object.assign(pos,spos);//<-------
+    //pac.translate(pac.canvas.width/2, pac.canvas.height/2);
+    pac.canvas.width=32;
+    pac.canvas.height=32;
+    pac.beginPath();
+    pac.arc(16, 16, 16, 0.1875*Math.PI, (2-0.1875)*Math.PI);
+    pac.lineTo(16,16);
+    pac.lineTo(16+8*Math.cos(0.1875*Math.PI),16+8*Math.sin(0.1875*Math.PI));
+    pac.fillStyle = "#f4f400";
+    pac.strokeStyle = "#f4f400";
+    pac.stroke();
+    pac.fill();
+    ctx2.drawImage(pac.canvas,xStart+xSize*0.1, yStart+xSize*0.1, xSize*0.8,xSize*0.8);
+    rad=0;
+    span=0;
+    tm=0;
+    x=0;
+    y=0;
     document.addEventListener("keydown", (e) => {
         a_chomp.play();
         console.log(a_chomp.duration);
         const key=e.key;
         console.log(key);
         console.log(maze.length);
-        console.log(maze[0].length);
         ctx2.imageSmoothingEnabled = false;
         ctx2.clearRect(0, 0, ctx2.canvas.width, ctx2.canvas.height);
-        rad=0;
-        x=0;
-        y=0;
         switch(key){
             case "w":case "W":case "ArrowUp":
                 if(pos.y>1&&maze[pos.x][pos.y-1]!=0){
                     pos.x+=+0;
                     pos.y+=-2;
-                    
-                    x = ((pos.x-1)/2*xSize+xStart+xSize*0.1) / 2;
-                    y = ((pos.y-1)/2*xSize+yStart+xSize*0.1) / 2;
+                    tm++;
                     rad = -90*Math.PI/180;
-                    ctx2.translate(x, y);
-                    ctx2.rotate(rad);
-                    
                     
                     console.log("qq");
                 }
@@ -264,12 +278,9 @@ play=()=>{
                 if(pos.y<maze[0].length-2&&maze[pos.x][pos.y+1]!=0){
                     pos.x+=+0;
                     pos.y+=+2;
-                    
-                    x = ((pos.x-1)/2*xSize+xStart+xSize*0.1) / 2;
-                    y = ((pos.y-1)/2*xSize+yStart+xSize*0.1) / 2;
+                    tm++;
                     rad = 90*Math.PI/180;
-                    ctx2.translate(x, y);
-                    ctx2.rotate(rad);
+                    
                     
                     console.log("ee");
                 }
@@ -281,11 +292,9 @@ play=()=>{
                     pos.x+=-2;
                     pos.y+=+0;
                     
-                    x = ((pos.x-1)/2*xSize+xStart+xSize*0.1) / 2;
-                    y = ((pos.y-1)/2*xSize+yStart+xSize*0.1) / 2;
+                    tm++;
                     rad = 180*Math.PI/180;
-                    ctx2.translate(x, y);
-                    ctx2.rotate(rad);
+                    
                     
                     console.log("kk");
                 }
@@ -297,21 +306,30 @@ play=()=>{
                     pos.x+=+2;
                     pos.y+=+0;
                     
-                    x = ((pos.x-1)/2*xSize+xStart+xSize*0.1) / 2;
-                    y = ((pos.y-1)/2*xSize+yStart+xSize*0.1) / 2;
+                    tm++;
                     rad = 0*Math.PI/180;
-                    ctx2.translate(x, y);
-                    ctx2.rotate(rad);
+                    
                     
                     console.log("gg");
                 }
 
                 break;
         }
+        x = ((pos.x-1)/2*xSize+xStart+xSize*0.1) ;
+        y = ((pos.y-1)/2*xSize+yStart+xSize*0.1) ;
         
-        ctx2.drawImage(pac, -xSize*0.8 / 2, -xSize*0.8 / 2, xSize*0.8,xSize*0.8);
-        ctx2.rotate(-rad);
-        ctx2.translate(-x, -y);
+        span = Math.sin(tm*Math.PI*1.9)*0.1*Math.PI;
+        pac.clearRect(0, 0, pac.canvas.width, pac.canvas.height)
+        pac.beginPath();
+        pac.arc(16, 16, 16, 0.1875*Math.PI+rad+span , (2-0.1875)*Math.PI+rad-span);
+        pac.lineTo(16,16);
+        pac.lineTo(16+8*Math.cos(0.1875*Math.PI+rad+span),16+8*Math.sin(0.1875*Math.PI+rad+span));
+        pac.fillStyle = "#f4f400";
+        pac.strokeStyle = "#f4f400";
+        pac.stroke();
+        pac.fill();
+        
+        ctx2.drawImage(pac.canvas,x, y, xSize*0.8,xSize*0.8);
         
     }, {signal: mover.signal});
 
@@ -364,16 +382,31 @@ solve=()=>{
 
 function incs(ell){
     var val = ell.value*1;
-    if(val==4)val=lang.auto;
-    ell.parentElement.querySelector(".tooltiptext").innerText=val;
+    var nm = document.querySelector(".switch-toggle > input:checked").getAttribute("id");
+    if(val==4){
+        val="$auto$";
+    }
+    var txt = ell.closest("li").querySelector(".trs");
+    txt.setAttribute("trval","val:"+val);
+    translate(txt, lang[nm]);
+    //txt.style.setProperty("--sh",(val-ell.min)/(ell.max-ell.min)*129+"px");
 }
 function innm(ell){
+    var nm = document.querySelector(".switch-toggle > input:checked").getAttribute("id");
     var val = ell.value*1;
-    ell.parentElement.querySelector(".tooltiptext").innerText=val;
+    var txt = ell.closest("li").querySelector(".trs");
+    //console.log(val);
+    txt.setAttribute("trval","val:"+val);
+    translate(txt, lang[nm]);
+    //txt.style.setProperty("--sh",(val-ell.min)/(ell.max-ell.min)*129+"px");
 }
 function incx(ell){
+    var nm = document.querySelector(".switch-toggle > input:checked").getAttribute("id");
     var val = Math.round(ell.value*0.1);
-    ell.parentElement.querySelector(".tooltiptext").innerText=val;
+    var txt = ell.closest("li").querySelector(".trs");
+    txt.setAttribute("trval","val:"+val);
+    translate(txt, lang[nm]);
+    //txt.style.setProperty("--sh",(val-ell.min)/(ell.max-ell.min)*129+"px");
 }
 
 function mswitch(ell){
@@ -381,9 +414,6 @@ function mswitch(ell){
         var inp = ell.querySelector("input:checked");
         var nm = inp.getAttribute("id");
         translate(document, lang[nm]);
-        
-        
-        
     },10);
 }
 

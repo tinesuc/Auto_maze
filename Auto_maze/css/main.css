@@ -31,10 +31,10 @@ span, label{
     user-select:text;
 }
 ul{
+    --inpw:15rem;
 	list-style-type:none;
     scrollbar-color:rgb(0 0 0 / 0);
     padding-top:3px;
-    width: fit-content;
     margin-left: 30%;
     position: relative;
 }
@@ -83,7 +83,7 @@ span.animate{
     padding:3px 6px;
     font-size:1.15rem;
     height:2rem;
-    margin:0.7rem 0.7rem 0 0;
+    margin-right:0.7rem;
     background-color: #0033ff;
     border-radius: 2px;
     color: #f4f400;
@@ -98,18 +98,25 @@ li{
     display:flex;
     width: 100%;
     flex-direction: column;
+    position:relative;
+    margin: 0.7rem 0.7rem 0 0;
+}
+li:has(#regen){
+    flex-direction: row;
+    justify-content: space-between;
+    width: calc(var(--inpw) + 6px)
 }
 li > div{
     display: flex;
-    height: 22px;
+    height: 28px;
     color: #dcdc38;
 }
-li > div > span:first-child{
+li > div.br > span:first-child{
     position: absolute;
     right: 102%;
     margin-top: 5px
 }
-li > div > span:last-child{
+li > div.br > span:last-child{
     position: absolute;
     left: 132px;
     margin-top: 5px
@@ -117,14 +124,31 @@ li > div > span:last-child{
 li:not(:has(*)){
     margin: 0 0 0 40%;
 }
-li > span:first-child{
+li > span.br:first-child{
     margin: auto 6px auto 0px;
     flex: 1;
     text-align: right;
 }
-li > span:last-child{
+li > span.br:last-child{
     margin: auto 0px auto 6px;
     flex: 1;
+}
+li > div.ttl{
+    position: absolute;
+    z-index: 1;
+    bottom: 5px;
+    height: unset;
+    left: 3%;
+    pointer-events: none;
+}
+li:has(input[type="number"]) > div.ttl{
+    bottom: 7px;
+}
+li > div:not(.br){
+    display: flex;
+}
+li > div:not(.br) > span{
+    align-self: flex-end;
 }
 li input{
     margin:auto 0;
@@ -134,14 +158,17 @@ li input{
 }
 li input[type="number"]{
     left: 0px;
-    width:10.7rem;
+    width:var(--inpw);
+    height: 28px;
+    font-size: 0.85rem;
+    text-align: end;
     background-color: #0033ff;
     border: 0;
     border-radius: 2px;
     color: #f4f400;
     border:2px solid #2053ff;
 }
-li input[type="number"]:focus-visible{
+:focus-visible{
     outline: none;
 }
 
@@ -183,7 +210,6 @@ li input[type="number"]:focus-visible{
 .toolpitbox{
     visibility: hidden;
     width: 129px;
-    text-align: center;
     position: absolute;
     z-index: 1;
     bottom: 100%;
@@ -191,13 +217,15 @@ li input[type="number"]:focus-visible{
     margin-left: 0px;
 }
 .tooltiptext {
+    --sh:50px;
     visibility: hidden;
     background-color: rgba(0 0 0 / 50%);
     color: #dcdc38;
     text-align: center;
     padding: 2px 8px;
     border-radius: 4px;
-    margin-left: calc(32.7rem/4 - 25%);
+    margin-left: var(--sh);
+    font-size: 0.9rem;
 }
 li:has(input[type=range]:hover) .tooltip .tooltiptext {
   visibility: visible;
@@ -209,13 +237,15 @@ li:has(input[type=range]:hover) .tooltip .tooltiptext {
 
 
 .switch-toggle {
-    background: #242729;
-    border-radius: 16px;
-    width: fit-content;
-    display: flex;
+    --hrt:2px;
     --hgt:16px;
+    background: #00156b;
+    border-radius: var(--hrt);
+    width: fit-content;
+    display: inline-flex;
     right: 0;
-    position: absolute;
+    /*position: absolute;*/
+    height:calc(var(--hgt)*2);
 }
 .switch-toggle input {
     display: none;
@@ -232,12 +262,12 @@ li:has(input[type=range]:hover) .tooltip .tooltiptext {
     background: #dcdc38;
 }
 .switch-toggle label:last-of-type {
-    border-end-end-radius: var(--hgt);
-    border-start-end-radius: var(--hgt);
+    border-end-end-radius: var(--hrt);
+    border-start-end-radius: var(--hrt);
 }
 .switch-toggle label:first-of-type {
-    border-start-start-radius: var(--hgt);
-    border-end-start-radius: var(--hgt);
+    border-start-start-radius: var(--hrt);
+    border-end-start-radius: var(--hrt);
 }
 
 
