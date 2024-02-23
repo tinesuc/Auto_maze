@@ -9,5 +9,7 @@
     "speed":"Hitrost",
     "play":"Igraj",
     "solve":"Reši",
-    "auto":"Avtomatsko"
+    "auto":"Avtomatsko",
+    "try_again":"Poskusi Znova",
+    "win":"Zmagali Ste!"
 }

@@ -20,6 +20,7 @@
         langlist=["en","sl"];
         lang=[];
     </script>  
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="js/script.js"></script>
     <script src="js/drag.js"></script>
     <script src="js/gen_maze.js"></script>
@@ -41,12 +42,17 @@
         </div>
         <div id="right">
             <ul>
-                <li><button id="regen" class="trs" trtxt="$regenerate$">Regenerate</button><div class="switch-toggle switch-3 switch-candy">
-                    <input id="en" name="state-d" type="radio" checked="" />
-                    <label for="en" onclick="mswitch(this.parentElement);">🇺🇸</label>
-                    <input id="sl" name="state-d" type="radio" />
-                    <label for="sl" onclick="mswitch(this.parentElement);">🇸🇮</label>
-                </div></li>
+                <li>
+                    <div class="br">
+                        <button id="regen" class="trs" trtxt="$regenerate$">Regenerate</button>
+                        <div class="switch-toggle switch-3 switch-candy">
+                            <input id="en" name="state-d" type="radio" checked="" />
+                            <label for="en" onclick="mswitch(this.parentElement);">🇺🇸</label>
+                            <input id="sl" name="state-d" type="radio" />
+                            <label for="sl" onclick="mswitch(this.parentElement);">🇸🇮</label>
+                        </div>
+                    </div>
+                </li>
                 <li>
                     <div class="ttl"><span class="trs" trtxt="$seed$:">Seed</span></div>
                     <div class="br">

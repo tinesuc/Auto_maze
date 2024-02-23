@@ -102,14 +102,14 @@ li{
     position:relative;
     margin: 0.7rem 0.7rem 0 0;
 }
-li:has(#regen){
+li > div:has(#regen){
     flex-direction: row;
     justify-content: space-between;
-    width: calc(var(--inpw) + 6px)
+    width: var(--inpw);
 }
 li > div{
     display: flex;
-    height: 28px;
+    height: 36px;
     color: #dcdc38;
 }
 li > div.br > span:first-child{
@@ -137,14 +137,14 @@ li > span.br:last-child{
 li > div.ttl{
     position: absolute;
     z-index: 1;
-    bottom: 5px;
+    top: 8px;
     height: unset;
     left: 3%;
     pointer-events: none;
     width: 100%;
 }
 li:has(input[type="number"]) > div.ttl{
-    bottom: 7px;
+    top: 7px;
 }
 li > div:not(.br){
     display: flex;
@@ -176,6 +176,7 @@ li input[type="number"]{
 
 #maze-play{
     display:flex;
+    justify-content: center;
 }
 #entrance{
     width:0;
@@ -274,8 +275,10 @@ li:has(input[type=range]:hover) .tooltip .tooltiptext {
 
 
 
-
-
+body > div.swal2-container.swal2-center.swal2-backdrop-show > div > div.swal2-actions > button.swal2-confirm.swal2-styled{
+    color:#dcdc38;
+    font-size: 1.1rem;
+}
 
 
 

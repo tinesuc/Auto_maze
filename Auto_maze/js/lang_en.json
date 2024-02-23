@@ -9,5 +9,7 @@
     "speed":"Speed",
     "play":"Play",
     "solve":"Solve",
-    "auto":"Auto"
+    "auto":"Auto",
+    "try_again":"Try Again",
+    "win":"You Won!"
 }

@@ -12,7 +12,7 @@ input[type=range] {
   --height-track:28px;
   --height-thumb:27px;
   --width-thumb:8px;
-  --border-radius-track:4px;
+  --border-radius-track:3px;
   --border-radius-thumb:34px;
 }
 input[type=range]:focus {

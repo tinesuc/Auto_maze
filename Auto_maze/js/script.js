@@ -6,14 +6,19 @@ ww = 0;
 prev_w = 0;
 prev_h = 0;
 mover = new AbortController();
-a_chomp = new Audio('aud/chomp.wav');
-a_chomp.volume=0.15;
+a_chomp = new Audio('aud/chomp2.wav');
+a_chomp2 = new Audio('aud/chomp2.wav');
+//a_chomp = new Audio('aud/pacman_chomp.wav');
+a_chomp.volume=0.10;
+a_chomp2.volume=0.10;
 a_eat = new Audio('aud/eatfruit.wav');
+a_eat2 = new Audio('aud/eatfruit.wav');
 a_eat.volume=0.15;
+a_eat2.volume=0.15;
 paci = document.createElement('img');
 paci.setAttribute("src","img/pcm1.png");
 pac = document.createElement("canvas").getContext("2d");
-
+dotList=[];
 /*paci.onload = function (){
    
     pac.drawImage(paci,0,0,paci.width,paci.height);
@@ -97,7 +102,7 @@ draw_maze=()=>{
     }
     ySize=xSize;
     door=document.querySelector('#door');
-    dSize=window.innerHeight/40;
+    dSize=xSize/0.9;//window.innerHeight/40;
     door.style.height=dSize + "px";
     
     
@@ -134,9 +139,11 @@ draw_maze=()=>{
     //console.log(arr);
     
 };
-
-regen=()=>{
+reset = ()=>{
     solved=false;
+    solving=false;
+    playing=false;
+    dtclr=false;
     for (var i=0; i<timeouts.length; i++) {
         clearTimeout(timeouts[i]);
     }
@@ -146,6 +153,10 @@ regen=()=>{
     sr_depth2=0;
     
     mover.abort();
+};
+
+regen=()=>{
+    reset();
     
     switch(complx.value*0.1){
         case 1:
@@ -229,15 +240,145 @@ regen=()=>{
     ctx.stroke();
 };
 
+rad=0;
+span=0;
+tm=0;
+x=0;
+y=0;
+solving=false;
+move = (e) => {
+    const key=e.key;
+    ctx2.imageSmoothingEnabled = false;
+    //ctx2.clearRect(0, 0, ctx2.canvas.width, ctx2.canvas.height);
+    ctx2.clearRect(x, y, xSize*0.8,xSize*0.8);
+    switch(key){
+        case "w":case "W":case "ArrowUp":
+            if(pos.y>1&&maze[pos.x][pos.y-1]!=0){
+                pos.x+=+0;
+                pos.y+=-2;
+                //tm++;
+                rad = -90*Math.PI/180;
+
+                console.log("ww");
+            }
+
+            break;
+        case "s":case "S":case "ArrowDown":
+            if(pos.y<maze[0].length-2&&maze[pos.x][pos.y+1]!=0){
+                pos.x+=+0;
+                pos.y+=+2;
+                //tm++;
+                rad = 90*Math.PI/180;
 
 
+                console.log("ss");
+            }
+
+
+            break;
+        case "a":case "A":case "ArrowLeft":
+            if(pos.x>1&&maze[pos.x-1][pos.y]!=0){
+                pos.x+=-2;
+                pos.y+=+0;
+
+                //tm++;
+                rad = 180*Math.PI/180;
+
+
+                console.log("aa");
+            }
+
+
+            break;
+        case "d":case "D":case "ArrowRight":
+            if(pos.x<maze.length-2&&maze[pos.x+1][pos.y]!=0){
+                pos.x+=+2;
+                pos.y+=+0;
+
+                //tm++;
+                rad = 0*Math.PI/180;
+
+
+                console.log("dd");
+            }
+
+            break;
+    }
+    var isDot=false;
+    for(var i=0;i<dotList.length;i++){
+        if(dotList[i].x==pos.x&&dotList[i].y==pos.y){
+            isDot=true;
+            break;
+        }
+    }
+    if(isDot&&solving){
+        a_eat.play();
+        tmp_eat=a_eat;
+        a_eat=a_eat2;
+        a_eat2=tmp_eat;
+    }
+    
+    x = ((pos.x-1)/2*xSize+xStart+xSize*0.1) ;
+    y = ((pos.y-1)/2*xSize+yStart+xSize*0.1) ;
+    ctx2.clearRect(x, y, xSize*0.8,xSize*0.8);
+
+    roffs = 0.15;
+    span = Math.sin(tm*Math.PI*0.5)*roffs*Math.PI;
+    pac.clearRect(0, 0, pac.canvas.width, pac.canvas.height);
+    pac.beginPath();
+    pac.arc(16, 16, 16, roffs*Math.PI+rad+span , (2-roffs)*Math.PI+rad-span);
+    pac.lineTo(16,16);
+    pac.lineTo(16+8*Math.cos(roffs*Math.PI+rad+span),16+8*Math.sin(roffs*Math.PI+rad+span));
+    pac.fillStyle = "#f4f400";
+    pac.strokeStyle = "#f4f400";
+    pac.stroke();
+    pac.fill();
+    ctx2.drawImage(pac.canvas,x, y, xSize*0.8,xSize*0.8);
+    
+    if(pos.x==epos.x&&pos.y==epos.y){
+        setTimeout(()=>{
+            if(!solving){
+                reset();
+                var nm = document.querySelector(".switch-toggle > input:checked").getAttribute("id");
+                Swal.fire({
+                    title: '<strong style="color:#dcdc38;">'+lang[nm].win+'</strong>',
+                    imageUrl:"img/fireworks.gif",
+                    showCloseButton: true,
+                    focusConfirm: true,
+                    background:"#101010",
+                    confirmButtonText: lang[nm].try_again,
+                    confirmButtonColor: '#0033ff',
+                    didOpen: () => Swal.getConfirmButton().focus()
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        play();
+                    }
+                })
+            }else{
+                reset();
+            }
+        },200);
+    }
+    /* 
+    Swal.fire({
+        title: "Sweet!",
+        text: "Modal with a custom image.",
+        imageUrl: "https://unsplash.it/400/200",
+        imageWidth: 400,
+        imageHeight: 200,
+        imageAlt: "Custom image"
+      });
+
+    */
+}
 
 pos={};
 play=()=>{
-    mover.abort();
+    reset();
     mover = new AbortController();
     Object.assign(pos,spos);//<-------
     //pac.translate(pac.canvas.width/2, pac.canvas.height/2);
+    ctx2.clearRect(0, 0, ctx2.canvas.width, ctx2.canvas.height);
     pac.canvas.width=32;
     pac.canvas.height=32;
     pac.beginPath();
@@ -254,85 +395,39 @@ play=()=>{
     tm=0;
     x=0;
     y=0;
-    document.addEventListener("keydown", (e) => {
-        a_chomp.play();
-        console.log(a_chomp.duration);
-        const key=e.key;
-        console.log(key);
-        console.log(maze.length);
-        ctx2.imageSmoothingEnabled = false;
-        ctx2.clearRect(0, 0, ctx2.canvas.width, ctx2.canvas.height);
-        switch(key){
-            case "w":case "W":case "ArrowUp":
-                if(pos.y>1&&maze[pos.x][pos.y-1]!=0){
-                    pos.x+=+0;
-                    pos.y+=-2;
-                    tm++;
-                    rad = -90*Math.PI/180;
-                    
-                    console.log("qq");
-                }
-                
-                break;
-            case "s":case "S":case "ArrowDown":
-                if(pos.y<maze[0].length-2&&maze[pos.x][pos.y+1]!=0){
-                    pos.x+=+0;
-                    pos.y+=+2;
-                    tm++;
-                    rad = 90*Math.PI/180;
-                    
-                    
-                    console.log("ee");
-                }
-                
-                
-                break;
-            case "a":case "A":case "ArrowLeft":
-                if(pos.x>1&&maze[pos.x-1][pos.y]!=0){
-                    pos.x+=-2;
-                    pos.y+=+0;
-                    
-                    tm++;
-                    rad = 180*Math.PI/180;
-                    
-                    
-                    console.log("kk");
-                }
-
-
-                break;
-            case "d":case "D":case "ArrowRight":
-                if(pos.x<maze.length-2&&maze[pos.x+1][pos.y]!=0){
-                    pos.x+=+2;
-                    pos.y+=+0;
-                    
-                    tm++;
-                    rad = 0*Math.PI/180;
-                    
-                    
-                    console.log("gg");
-                }
-
-                break;
+    
+    aud_time=0;
+    timeouts.push(setInterval(()=>{
+        //ctx2.clearRect(0, 0, ctx2.canvas.width, ctx2.canvas.height);
+        tm++;
+        aud_time++;
+        if(aud_time%4===0){
+            a_chomp.play();
+            tmp_chomp=a_chomp;
+            a_chomp=a_chomp2;
+            a_chomp2=tmp_chomp;
         }
         x = ((pos.x-1)/2*xSize+xStart+xSize*0.1) ;
         y = ((pos.y-1)/2*xSize+yStart+xSize*0.1) ;
-        
-        span = Math.sin(tm*Math.PI*1.9)*0.1*Math.PI;
-        pac.clearRect(0, 0, pac.canvas.width, pac.canvas.height)
+        ctx2.clearRect(x, y, xSize*0.8,xSize*0.8);
+
+        roffs = 0.15;
+        span = Math.sin(tm*Math.PI*0.5)*roffs*Math.PI;
+        pac.clearRect(0, 0, pac.canvas.width, pac.canvas.height);
         pac.beginPath();
-        pac.arc(16, 16, 16, 0.1875*Math.PI+rad+span , (2-0.1875)*Math.PI+rad-span);
+        pac.arc(16, 16, 16, roffs*Math.PI+rad+span , (2-roffs)*Math.PI+rad-span);
         pac.lineTo(16,16);
-        pac.lineTo(16+8*Math.cos(0.1875*Math.PI+rad+span),16+8*Math.sin(0.1875*Math.PI+rad+span));
+        pac.lineTo(16+8*Math.cos(roffs*Math.PI+rad+span),16+8*Math.sin(roffs*Math.PI+rad+span));
         pac.fillStyle = "#f4f400";
         pac.strokeStyle = "#f4f400";
         pac.stroke();
         pac.fill();
-        
+
         ctx2.drawImage(pac.canvas,x, y, xSize*0.8,xSize*0.8);
         
-    }, {signal: mover.signal});
-
+    },75));
+    
+    document.addEventListener("keydown", move, {signal: mover.signal});
     
 };
 
@@ -342,14 +437,110 @@ play=()=>{
 
 
 
-
-
 solve=()=>{
+    reset();
     if(solved)return;
     speed=document.querySelector('#speed').value*1;
-    mover.abort();
+    console.log(maze);
+    complete=false;
+    ctx2.clearRect(0, 0, ctx2.canvas.width, ctx2.canvas.height);
+    search_maze(maze, spos,epos ,{ctx:ctx2,xSize:xSize,xStart:xStart,yStart:yStart,ySize:ySize,t:speed,b:true,mz:maze});
+    for(i=0;i<maze.length;i++){
+        for(j=0;j<maze[i].length;j++){
+            var v=maze[i][j];
+            if(v==2){
+                maze[i][j]=1;
+            }
+        }
+    }
+    pac.canvas.width=32;
+    pac.canvas.height=32;
+    ct=0;
+    console.log(sr_depth*speed+" t "+draw_dt_delay+200+"  "+timeo+"  "+sr_depth2*speed);
+    timeouts.push(setTimeout(()=>{
+        console.log(dotList);
+        //return;
+        ppos={};
+        Object.assign(ppos,spos);
+        Object.assign(pos,spos);
+        aud_time=0;
+        solving=true;
+        var loop = setInterval(()=>{
+            //ctx2.clearRect(0, 0, ctx2.canvas.width, ctx2.canvas.height);
+            tm++;
+            aud_time++;
+            if(aud_time%4===0){
+                a_chomp.play();
+                tmp_chomp=a_chomp;
+                a_chomp=a_chomp2;
+                a_chomp2=tmp_chomp;
+                
+                ct++;
+                if(ct-100>maze.length*maze[0].length)return;
+                var xt= pos.x;
+                var yt= pos.y;
+                //console.log(pos);
+                for(i=0;i<4;i++){
+                    var xc=xt+dir[i][0];
+                    var yc=yt+dir[i][1];
+                //console.log(" xc:"+xc+"  "+yc);
+                    if(0<xc&&xc<maze.length&&0<yc&&yc<maze[0].length){
+                            //console.log(" mz:"+maze[xc][yc]);
+                        if(!(ppos.x==xc&&ppos.y==yc)&&(maze[xc][yc]===3||maze[xc][yc]===7)){
+                            var xh=xt+dirh[i][0];
+                            var yh=yt+dirh[i][1];
+                            if(maze[xh][yh]===1){
+                                var k="";
+                                switch(i){
+                                    case 0:k="s";break;
+                                    case 1:k="d";break;
+                                    case 2:k="w";break;
+                                    case 3:k="a";break;
+                                }
+
+                                //console.log(k);
+                                ppos={x:pos.x,y:pos.y};
+                                move({key:k});
+                                if(epos.x==xc&&epos.y==yc)clearTimeout(loop);
+                                pos={x:xc,y:yc};
+//                                console.log(" p:");
+//                                console.log(ppos);
+//                                console.log(" s:");
+//                                console.log(pos);
+                                break;
+
+                            }
+                        }
+                    }
+                }
+                
+                
+            }
+            x = ((pos.x-1)/2*xSize+xStart+xSize*0.1) ;
+            y = ((pos.y-1)/2*xSize+yStart+xSize*0.1) ;
+            ctx2.clearRect(x, y, xSize*0.8,xSize*0.8);
+            
+            roffs = 0.15;
+            span = Math.sin(tm*Math.PI*0.5)*roffs*Math.PI;
+            pac.clearRect(0, 0, pac.canvas.width, pac.canvas.height);
+            pac.beginPath();
+            pac.arc(16, 16, 16, roffs*Math.PI+rad+span , (2-roffs)*Math.PI+rad-span);
+            pac.lineTo(16,16);
+            pac.lineTo(16+8*Math.cos(roffs*Math.PI+rad+span),16+8*Math.sin(roffs*Math.PI+rad+span));
+            pac.fillStyle = "#f4f400";
+            pac.strokeStyle = "#f4f400";
+            pac.stroke();
+            pac.fill();
+            ctx2.drawImage(pac.canvas,x, y, xSize*0.8,xSize*0.8);
+            
+        }, 75);
+        timeouts.push(loop);
+    }
+    ,sr_depth*speed+2*draw_dt_delay+200-sr_depth2*speed));
+   
     
-    search_maze(maze, spos,epos ,{ctx:ctx2,xSize:xSize,xStart:xStart,yStart:yStart,ySize:ySize,t:speed,b:true});
+    
+    
     solved=true;
     /*
     ctx2.fillStyle = "#00ff00";
@@ -389,16 +580,13 @@ function incs(ell){
     var txt = ell.closest("li").querySelector(".trs");
     txt.setAttribute("trval","val:"+val);
     translate(txt, lang[nm]);
-    //txt.style.setProperty("--sh",(val-ell.min)/(ell.max-ell.min)*129+"px");
 }
 function innm(ell){
     var nm = document.querySelector(".switch-toggle > input:checked").getAttribute("id");
     var val = ell.value*1;
     var txt = ell.closest("li").querySelector(".trs");
-    //console.log(val);
     txt.setAttribute("trval","val:"+val);
     translate(txt, lang[nm]);
-    //txt.style.setProperty("--sh",(val-ell.min)/(ell.max-ell.min)*129+"px");
 }
 function incx(ell){
     var nm = document.querySelector(".switch-toggle > input:checked").getAttribute("id");
@@ -406,7 +594,6 @@ function incx(ell){
     var txt = ell.closest("li").querySelector(".trs");
     txt.setAttribute("trval","val:"+val);
     translate(txt, lang[nm]);
-    //txt.style.setProperty("--sh",(val-ell.min)/(ell.max-ell.min)*129+"px");
 }
 
 function mswitch(ell){
@@ -472,7 +659,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
 manage_anim = (event) => {
     let containers = document.querySelectorAll(".text");
     for (i = 0; i < containers.length; i++) {
-        container = containers[i];
+        var container = containers[i];
 
         let padding_left = parseFloat(window.getComputedStyle(container, null).getPropertyValue('padding-left'));
         let padding_right = parseFloat(window.getComputedStyle(container, null).getPropertyValue('padding-right'));
@@ -487,11 +674,9 @@ manage_anim = (event) => {
 resize_handle = (event) => {
 
     zoom = window.devicePixelRatio * 1;
-    console.log(zoom);
     ww = window.innerWidth;
     wh = window.innerHeight;
     aspect = ww / wh;
-    //console.log(aspect);
     let root = document.querySelector(":root");
     root.style.setProperty('--zoom', zoom);
     root.style.setProperty('--aspect', aspect);
@@ -500,43 +685,40 @@ resize_handle = (event) => {
 };
 function stackCanvas(c1, c2) {
 
-    d1 = c1.getImageData(0, 0, c1.canvas.width, c1.canvas.height).data;
-    d2 = c2.getImageData(0, 0, c2.canvas.width, c2.canvas.height).data;
+    var d1 = c1.getImageData(0, 0, c1.canvas.width, c1.canvas.height).data;
+    var d2 = c2.getImageData(0, 0, c2.canvas.width, c2.canvas.height).data;
     if (d1.length != d2.length) {
         console.log((counter++) + "   not same size");
     }
-    canva = document.createElement('canvas');
-    cO = canva.getContext("2d");
+    var canva = document.createElement('canvas');
+    var cO = canva.getContext("2d");
     cO.fillRect(0, 0, c1.canvas.width, c1.canvas.height);
-    dO = cO.getImageData(0, 0, c1.canvas.width, c1.canvas.height);
+    var dO = cO.getImageData(0, 0, c1.canvas.width, c1.canvas.height);
     for (i = 3; i < d1.length; i += 4) {
-        a1 = d1[i];
-        a2 = d2[i];
-        r1 = d1[i - 1];
-        r2 = d2[i - 1];
-        g1 = d1[i - 2];
-        g2 = d2[i - 2];
-        b1 = d1[i - 3];
-        b2 = d2[i - 3];
+        var a1 = d1[i];
+        var a2 = d2[i];
+        var r1 = d1[i - 1];
+        var r2 = d2[i - 1];
+        var g1 = d1[i - 2];
+        var g2 = d2[i - 2];
+        var b1 = d1[i - 3];
+        var b2 = d2[i - 3];
 
-        a = a2;
-        r = ((255 - a2) * r1 + a2 * r2) / 255;
-        g = ((255 - a2) * g1 + a2 * g2) / 255;
-        b = ((255 - a2) * b1 + a2 * b2) / 255;
+        var a = a2;
+        var r = ((255 - a2) * r1 + a2 * r2) / 255;
+        var g = ((255 - a2) * g1 + a2 * g2) / 255;
+        var b = ((255 - a2) * b1 + a2 * b2) / 255;
 
         dO[i] = a;
         dO[i - 1] = r;
         dO[i - 2] = g;
         dO[i - 3] = b;
     }
-    console.log(dO);
     cO.putImageData(dO, 0, 0);
     return cO;
 }
 
 onloadm = () => {
-    //time=Date.now();
-    //console.log(time+"   tz");
     ww = window.innerWidth;
     wh = window.innerHeight;
     prev_w = ww;
@@ -551,7 +733,7 @@ input_full = (event, ell) => {
         try{
             ell.nextElementSibling.focus();
         }catch(e){
-            maxlen=parseInt(ell.attributes['maxlength'].value);
+            var maxlen=parseInt(ell.attributes['maxlength'].value);
             ell.value=ell.value.substring(0, maxlen);
         }
     }
@@ -562,8 +744,8 @@ input_empty = (event, ell) => {
     }
 }
 filter_keys = (event, keys, ell) => {
-    text = ell.value;
-    tout = "";
+    var text = ell.value;
+    var tout = "";
     for (char of text) {
         if (keys.includes(char)) {
             tout += char
@@ -577,9 +759,9 @@ filter_num_code = (event, ell) => {
     filter_keys(event, ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"], ell)
 }
 filter_num_clamp = (ell, min, max, step) => {
-    num = Number(ell.value);
+    var num = Number(ell.value);
     ell.value = clamp(num, min, max, step);
-}
+};
 
 
 
