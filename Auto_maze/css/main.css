@@ -186,7 +186,7 @@ li input[type="number"]{
 }
 #door{
     aspect-ratio:1;
-    background:#5bbe2580;
+    background:#f4f40080;
     position:absolute;
     border-radius: 50%;
 }

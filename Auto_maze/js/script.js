@@ -92,18 +92,7 @@ draw_maze=()=>{
     widthEl=document.querySelector('#width');
     heightEl=document.querySelector('#height')
     sizeEl=document.querySelector('#size');
-    xSize=sizeEl.value*1;
-    if(xSize==4){
-        var wid=window.innerWidth/3.3;
-        var szx= Math.round(wid/widthEl.value);
-        var hei=window.innerHeight/2;
-        var szy= Math.round(hei/heightEl.value);
-        xSize=Math.min(szx,szy);
-    }
-    ySize=xSize;
-    door=document.querySelector('#door');
-    dSize=xSize/0.9;//window.innerHeight/40;
-    door.style.height=dSize + "px";
+    
     
     
     regen();
@@ -193,6 +182,21 @@ regen=()=>{
         xSize=Math.min(szx,szy);
     }
     ySize=xSize;
+    door=document.querySelector('#door');
+    dSize=xSize/1.3;//window.innerHeight/40;
+    dSize = clamp(dSize, 5, 50);
+    door.style.height=dSize + "px";
+    
+    
+    /*
+    door.style.left = pos.x + "px";
+    door.style.top = pos.y + "px";*/
+    
+    //cw=nx*xSize+2*xStart;
+    canva.width=cw=nx*xSize+2*xStart;
+    canva.height=ch=ny*ySize+2*yStart;
+    anim.width=cw=nx*xSize+2*xStart;
+    anim.height=ch=ny*ySize+2*yStart;
     
     dragBounds["edge"]=(x,y)=>{
         //dSize/2
@@ -206,15 +210,16 @@ regen=()=>{
             x:x,
             y:y
         };
-    };/*
-    door.style.left = pos.x + "px";
-    door.style.top = pos.y + "px";*/
+    };
+    var viewportOffset = door.parentElement.getBoundingClientRect();
+    var viewportOffsetd = door.getBoundingClientRect();
+    var bounds=dragBounds["edge"];
+    var dpos = bounds(
+            (viewportOffsetd.left - viewportOffset.left),
+            (viewportOffsetd.top - viewportOffset.top));
+    door.style.left = dpos.x + "px";
+    door.style.top = dpos.y + "px";
     
-    //cw=nx*xSize+2*xStart;
-    canva.width=cw=nx*xSize+2*xStart;
-    canva.height=ch=ny*ySize+2*yStart;
-    anim.width=cw=nx*xSize+2*xStart;
-    anim.height=ch=ny*ySize+2*yStart;
     lineW=1;
     ctx.globalCompositeOperation="source-over";
     ctx.beginPath();
@@ -246,12 +251,26 @@ tm=0;
 x=0;
 y=0;
 solving=false;
+hintTime=0;
 move = (e) => {
     const key=e.key;
     ctx2.imageSmoothingEnabled = false;
     //ctx2.clearRect(0, 0, ctx2.canvas.width, ctx2.canvas.height);
     ctx2.clearRect(x, y, xSize*0.8,xSize*0.8);
     switch(key){
+        case "h":case "H":
+            if(!solving&&Date.now()-hintTime>3000){
+                hintTime=Date.now();
+                playing=true;
+                speed=document.querySelector('#speed').value*1;
+                draw_dt_delay=200;
+                sr_depth=0;
+                sr_depth2=0;
+                search_maze(maze, pos,epos ,{ctx:ctx2,xSize:xSize,xStart:xStart,yStart:yStart,ySize:ySize,t:speed,b:true,mz:maze});
+                playing=false;
+            }
+        
+            break;
         case "w":case "W":case "ArrowUp":
             if(pos.y>1&&maze[pos.x][pos.y-1]!=0){
                 pos.x+=+0;
@@ -389,7 +408,7 @@ play=()=>{
     pac.strokeStyle = "#f4f400";
     pac.stroke();
     pac.fill();
-    ctx2.drawImage(pac.canvas,xStart+xSize*0.1, yStart+xSize*0.1, xSize*0.8,xSize*0.8);
+    //ctx2.drawImage(pac.canvas,xStart+xSize*0.1, yStart+xSize*0.1, xSize*0.8,xSize*0.8);
     rad=0;
     span=0;
     tm=0;

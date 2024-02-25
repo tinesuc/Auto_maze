@@ -97,15 +97,15 @@ dtclr=false;
 function drawYellow (spos,v){
     dtclr=false;
     v.ctx.fillStyle = "#ffff8080";
-    v.ctx.fillRect(v.xSize*(spos.x-1)/2+v.xStart+1,
-        v.ySize*(spos.y-1)/2+v.yStart+1,
-        v.xSize-2, v.ySize-2);
+    v.ctx.fillRect(v.xSize*(spos.x-1)/2+v.xStart+1.5,
+        v.ySize*(spos.y-1)/2+v.yStart+1.5,
+        v.xSize-3, v.ySize-3);
 };
 function drawGreen (spos,v){
     v.ctx.fillStyle = "#80ff8080";
-    v.ctx.fillRect(v.xSize*(spos.x-1)/2+v.xStart+1,
-        v.ySize*(spos.y-1)/2+v.yStart+1,
-        v.xSize-2, v.ySize-2);
+    v.ctx.fillRect(v.xSize*(spos.x-1)/2+v.xStart+1.5,
+        v.ySize*(spos.y-1)/2+v.yStart+1.5,
+        v.xSize-3, v.ySize-3);
 };
 function drawDot (spos,v){
     if(!dtclr){
@@ -133,12 +133,12 @@ search_maze=(mz, spos, epos, v)=>{
         v.b=false;
     }
     mz[spos.x][spos.y]=2;
-    timeouts.push(setTimeout(()=>drawYellow(spos,v),timeo));
+    if(!playing)timeouts.push(setTimeout(()=>drawYellow(spos,v),timeo));
     sr_depth2++;
     timeo+=v.t;
     if(spos.x==epos.x&&spos.y==epos.y){
         mz[epos.x][epos.y]=3;
-        timeouts.push(setTimeout(()=>drawGreen(spos,v),timeo));
+        if(!playing)timeouts.push(setTimeout(()=>drawGreen(spos,v),timeo));
         timeo+=v.t;
         draw_dt_delay=draw_dt_delay+sr_depth2*v.t + sr_depth*v.t;
         return 1;
@@ -153,9 +153,13 @@ search_maze=(mz, spos, epos, v)=>{
                 sr_depth++;
                 if(search_maze(mz,{x:xc,y:yc},epos,v)==1){
                     mz[spos.x][spos.y]=3;
-                    timeouts.push(setTimeout(()=>drawDot(spos,v),sr_depth*v.t+draw_dt_delay));
-                    timeouts.push(setTimeout(()=>drawGreen(spos,v),timeo));
-                    //(timeo - sr_depth2*v.t) 
+                    if(!playing){
+                        timeouts.push(setTimeout(()=>drawDot(spos,v),sr_depth*v.t+draw_dt_delay));
+                    }else{
+                        timeouts.push(setTimeout(()=>drawGreen(spos,v),(sr_depth*v.t+00)/5));
+                        timeouts.push(setTimeout(()=>v.ctx.clearRect(0, 0, v.ctx.canvas.width, v.ctx.canvas.height),(draw_dt_delay-sr_depth2*v.t+200)/5+200));
+                    }
+                    if(!playing)timeouts.push(setTimeout(()=>drawGreen(spos,v),timeo));
                     sr_depth--;
                     timeo+=v.t;
                     return 1;
