@@ -140,7 +140,8 @@ reset = ()=>{
     draw_dt_delay=200;
     sr_depth=0;
     sr_depth2=0;
-    
+    hintTime=0;
+   
     mover.abort();
 };
 
