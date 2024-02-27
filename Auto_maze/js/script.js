@@ -140,8 +140,7 @@ reset = ()=>{
     draw_dt_delay=200;
     sr_depth=0;
     sr_depth2=0;
-    hintTime=0;
-   
+    
     mover.abort();
 };
 
@@ -257,7 +256,7 @@ move = (e) => {
     const key=e.key;
     ctx2.imageSmoothingEnabled = false;
     //ctx2.clearRect(0, 0, ctx2.canvas.width, ctx2.canvas.height);
-    ctx2.clearRect(x, y, xSize*0.8,xSize*0.8);
+    ctx2.clearRect(x - 1, y - 1, xSize*0.8 + 2,xSize*0.8 + 2);
     switch(key){
         case "h":case "H":
             if(!solving&&Date.now()-hintTime>3000){
@@ -340,7 +339,7 @@ move = (e) => {
     
     x = ((pos.x-1)/2*xSize+xStart+xSize*0.1) ;
     y = ((pos.y-1)/2*xSize+yStart+xSize*0.1) ;
-    ctx2.clearRect(x, y, xSize*0.8,xSize*0.8);
+    ctx2.clearRect(x - 1, y - 1, xSize*0.8 + 2,xSize*0.8 + 2);
 
     roffs = 0.15;
     span = Math.sin(tm*Math.PI*0.5)*roffs*Math.PI;
@@ -429,7 +428,7 @@ play=()=>{
         }
         x = ((pos.x-1)/2*xSize+xStart+xSize*0.1) ;
         y = ((pos.y-1)/2*xSize+yStart+xSize*0.1) ;
-        ctx2.clearRect(x, y, xSize*0.8,xSize*0.8);
+        ctx2.clearRect(x - 1, y - 1, xSize*0.8 + 2,xSize*0.8 + 2);
 
         roffs = 0.15;
         span = Math.sin(tm*Math.PI*0.5)*roffs*Math.PI;
@@ -538,7 +537,7 @@ solve=()=>{
             }
             x = ((pos.x-1)/2*xSize+xStart+xSize*0.1) ;
             y = ((pos.y-1)/2*xSize+yStart+xSize*0.1) ;
-            ctx2.clearRect(x, y, xSize*0.8,xSize*0.8);
+            ctx2.clearRect(x - 1, y - 1, xSize*0.8 + 2,xSize*0.8 + 2);
             
             roffs = 0.15;
             span = Math.sin(tm*Math.PI*0.5)*roffs*Math.PI;
