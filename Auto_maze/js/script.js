@@ -133,6 +133,7 @@ reset = ()=>{
     solving=false;
     playing=false;
     dtclr=false;
+    door.style.display="block";
     for (var i=0; i<timeouts.length; i++) {
         clearTimeout(timeouts[i]);
     }
@@ -262,13 +263,11 @@ move = (e) => {
         case "h":case "H":
             if(!solving&&Date.now()-hintTime>3000){
                 hintTime=Date.now();
-                playing=true;
                 speed=document.querySelector('#speed').value*1;
                 draw_dt_delay=200;
                 sr_depth=0;
                 sr_depth2=0;
                 search_maze(maze, pos,epos ,{ctx:ctx2,xSize:xSize,xStart:xStart,yStart:yStart,ySize:ySize,t:speed,b:true,mz:maze});
-                playing=false;
             }
         
             break;
@@ -394,7 +393,10 @@ move = (e) => {
 
 pos={};
 play=()=>{
+    if(playing||solving)return;
     reset();
+    playing=true;
+    door.style.display="none";
     mover = new AbortController();
     Object.assign(pos,spos);//<-------
     //pac.translate(pac.canvas.width/2, pac.canvas.height/2);
@@ -456,15 +458,20 @@ play=()=>{
 
 
 
-
+tpos={};
 solve=()=>{
+    if(solving)return;
+    Object.assign(tpos,spos);
+    if(playing)Object.assign(tpos,pos);
     reset();
     if(solved)return;
+    solving=true;
+    door.style.display="none";
     speed=document.querySelector('#speed').value*1;
     console.log(maze);
     complete=false;
     ctx2.clearRect(0, 0, ctx2.canvas.width, ctx2.canvas.height);
-    search_maze(maze, spos,epos ,{ctx:ctx2,xSize:xSize,xStart:xStart,yStart:yStart,ySize:ySize,t:speed,b:true,mz:maze});
+    search_maze(maze, tpos,epos ,{ctx:ctx2,xSize:xSize,xStart:xStart,yStart:yStart,ySize:ySize,t:speed,b:true,mz:maze});
     for(i=0;i<maze.length;i++){
         for(j=0;j<maze[i].length;j++){
             var v=maze[i][j];
@@ -481,8 +488,8 @@ solve=()=>{
         console.log(dotList);
         //return;
         ppos={};
-        Object.assign(ppos,spos);
-        Object.assign(pos,spos);
+        Object.assign(ppos,tpos);
+        Object.assign(pos,tpos);
         aud_time=0;
         solving=true;
         var loop = setInterval(()=>{
