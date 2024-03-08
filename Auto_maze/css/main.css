@@ -78,7 +78,7 @@ span.animate{
     padding:20px 0;
     margin-right: calc(40vw - 320px);
 }
-#regen,#play,#solve{
+#regen,#play,#solve,#help{
     width:fit-content;
     min-width:5rem;
     padding:3px 6px;
@@ -92,6 +92,12 @@ span.animate{
 }
 #regen,#play{
     margin-left: 0%;
+}
+#help-div{
+    justify-content: center;
+}
+#help{
+    min-width:10.7rem;
 }
 li{
     padding:3px 6px 3px 0;
@@ -280,7 +286,9 @@ body > div.swal2-container.swal2-center.swal2-backdrop-show > div > div.swal2-ac
     font-size: 1.1rem;
 }
 
-
+div:where(.swal2-container) .swal2-html-container{
+    text-align:left !important;
+}
 
 
 
