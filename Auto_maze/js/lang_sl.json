@@ -11,5 +11,10 @@
     "solve":"Reši",
     "auto":"Avtomatsko",
     "try_again":"Poskusi Znova",
-    "win":"Zmagali Ste!"
+    "win":"Zmagali Ste!",
+    "help":"Navodila",
+    "close":"Zapri",
+    "help_text":"Premaknite rumeni krog z miško, da spremenite začetno pozicijo.",
+    "help_text2":"Kliknite \"Igraj\", da začnete igrati uporabite wasd ali puščice in h za namige.",
+    "help_text3":"Kliknite \"Reši\", da automatsko reši labirint."
 }

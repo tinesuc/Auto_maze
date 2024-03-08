@@ -11,5 +11,10 @@
     "solve":"Solve",
     "auto":"Auto",
     "try_again":"Try Again",
-    "win":"You Won!"
+    "win":"You Won!",
+    "help":"Instructions",
+    "close":"Close",
+    "help_text":"Move the yellow circle with the mouse to change the starting position.",
+    "help_text2":"Click \"Play\" to play the game using wasd or arrow keys and h for hints.",
+    "help_text3":"Click \"Solve\" to sove the maze automaticaly."
 }

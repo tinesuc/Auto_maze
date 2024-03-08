@@ -221,6 +221,10 @@ regen=()=>{
             (viewportOffsetd.top - viewportOffset.top));
     door.style.left = dpos.x + "px";
     door.style.top = dpos.y + "px";
+    var dpx=Math.round((door.style.left.substring(0,door.style.left.length-2)*1+dSize/2-xStart)/xSize-0.5)*2+1;
+    var dpy=Math.round((door.style.top.substring(0,door.style.top.length-2)*1+dSize/2-yStart)/xSize-0.5)*2+1;
+    spos={x:dpx,y:dpy};
+    
     
     lineW=1;
     ctx.globalCompositeOperation="source-over";
@@ -635,7 +639,21 @@ function mswitch(ell){
 
 
 
-
+help=()=>{
+    var nm = document.querySelector(".switch-toggle > input:checked").getAttribute("id");
+    console.log(lang[nm].help_text);
+    Swal.fire({
+        title: '<strong style="color:#dcdc38;">'+lang[nm].help+'</strong>',
+        html:"<span style='color: #dcdc38;text-align: left;'>"+lang[nm].help_text+"<br><br>"+lang[nm].help_text2+"<br><br>"+lang[nm].help_text3+"</span>",
+        showCloseButton: true,
+        focusConfirm: true,
+        background:"#101010",
+        confirmButtonText: lang[nm].close,
+        confirmButtonColor: '#0033ff',
+        didOpen: () => Swal.getConfirmButton().focus()
+    });
+    
+}
 
 
 
@@ -670,6 +688,10 @@ document.addEventListener("DOMContentLoaded", (event) => {
     solveB=document.querySelector('#solve');
     solveB.addEventListener("click", (event) => {
         solve();
+    });
+    helpB=document.querySelector('#help');
+    helpB.addEventListener("click", (event) => {
+        help();
     });
     
     
